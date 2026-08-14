@@ -396,6 +396,46 @@
   .example-caption{ margin-top:18px; }
   .example-caption h3{ font-size:17px; font-weight:700; }
   .example-caption p{ margin-top:6px; font-size:14px; color:var(--muted); }
+
+  /* ---- Modelos de web (plantillas) ---- */
+  .models{ background: var(--bg-soft); transition: background-color .35s ease; }
+  .models-grid{ display:grid; grid-template-columns:repeat(6, 1fr); gap:26px; margin-top:44px; }
+  .model-card{ grid-column: span 2; display:flex; flex-direction:column; }
+  .model-card:nth-child(4), .model-card:nth-child(5){ grid-column: span 3; }
+  .model-frame{ position:relative; display:block; width:100%; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; background:var(--card-bg); box-shadow:0 24px 50px -32px rgba(5,7,12,0.4); transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+  .model-frame:hover{ transform:translateY(-6px); border-color:var(--blue-300); box-shadow:0 34px 70px -26px rgba(46,124,246,0.4); }
+  .model-frame:focus-visible{ outline:2px solid var(--blue-500); outline-offset:2px; }
+  .model-poster{ position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; aspect-ratio:16/11; overflow:hidden; }
+  .model-poster::before{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.10), rgba(0,0,0,0.48)); }
+  .model-poster::after{ content:""; position:absolute; top:0; left:-60%; width:45%; height:100%; background:linear-gradient(100deg, transparent, rgba(255,255,255,0.16), transparent); transform:translateX(-130%); }
+  .model-frame:hover .model-poster::after{ animation: shineSweep 1.2s ease; }
+  .model-poster b, .model-poster i{ position:relative; z-index:2; }
+  .model-poster b{ font-family:var(--font-display); font-size:clamp(20px, 2.4vw, 30px); font-weight:800; letter-spacing:-0.04em; text-transform:uppercase; color:#fff; text-shadow:0 8px 26px rgba(0,0,0,0.5); }
+  .model-poster i{ font-style:normal; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.75); }
+  .m-cinema{ background:linear-gradient(145deg,#16255E,#070B14); }
+  .m-constellation{ background:linear-gradient(145deg,#0B2233,#04060A); }
+  .m-aurora{ background:linear-gradient(145deg,#FFB199,#7C6BFF 55%,#39C6B4); }
+  .m-monolith{ background:linear-gradient(145deg,#D7FF3E,#1A1A1A 60%,#0A0A0A); }
+  .m-prism{ background:linear-gradient(145deg,#8B5CF6,#EC4899 50%,#22D3EE); }
+  .model-open{ position:absolute; right:14px; bottom:14px; z-index:3; display:flex; align-items:center; gap:7px; padding:8px 14px; border-radius:999px; background:rgba(255,255,255,0.94); color:#05070c; font-size:12.5px; font-weight:700; opacity:0; transform:translateY(6px); transition:opacity .25s ease, transform .25s ease; }
+  .model-frame:hover .model-open{ opacity:1; transform:translateY(0); }
+  .model-caption{ margin-top:18px; }
+  .model-caption h3{ font-size:17px; font-weight:700; }
+  .model-caption p{ margin-top:6px; font-size:14px; color:var(--muted); }
+  .model-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+  .model-tags span{ font-family:var(--font-mono); font-size:10.5px; padding:4px 9px; border-radius:999px; border:1px solid var(--line); color:var(--muted); }
+  .models-foot{ margin-top:44px; display:flex; align-items:center; justify-content:center; }
+  @media(max-width: 1000px){
+    .models-grid{ grid-template-columns:repeat(2, 1fr); }
+    .model-card, .model-card:nth-child(4), .model-card:nth-child(5){ grid-column: span 1; }
+  }
+  @media(max-width: 640px){
+    .models-grid{ grid-template-columns:1fr; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .model-frame:hover{ transform:none; }
+    .model-frame:hover .model-poster::after{ animation:none; }
+  }
   @media (max-width:900px){ .examples-grid{ grid-template-columns:1fr; gap:32px; max-width:480px; margin-left:auto; margin-right:auto; } }
  
   /* ---------- Micro-animaciones dentro de los mockups SVG ---------- */
@@ -479,6 +519,7 @@
     <a href="#inicio" class="logo-wordmark" aria-label="Post Studio">POST STUDIO</a>
     <nav class="nav-links">
       <a href="#ejemplos">Ejemplos</a>
+      <a href="#modelos">Modelos</a>
       <a href="#precios">Precios</a>
       <a href="#faq">FAQ</a>
       <a href="#contacto">Contacto</a>
@@ -495,6 +536,7 @@
   </div>
   <div class="mobile-panel" id="mobilePanel">
     <a href="#ejemplos">Ejemplos</a>
+    <a href="#modelos">Modelos</a>
     <a href="#precios">Precios</a>
     <a href="#faq">FAQ</a>
     <a href="#contacto">Contacto</a>
@@ -691,7 +733,88 @@
       </div>
     </div>
   </section>
- 
+
+  <section class="models" id="modelos">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Modelos</p>
+        <h2>Cinco estilos listos para adaptar a tu marca.</h2>
+        <p>Además de diseñar desde cero, partimos de modelos propios que ya funcionan. Ábrelos y navégalos: son webs reales, con sus animaciones y efectos, no capturas de pantalla. Cambiamos colores, textos e imágenes por los tuyos.</p>
+      </div>
+
+      <div class="models-grid">
+        <article class="model-card reveal">
+          <a class="model-frame" href="plantillas/01-cinema.html" target="_blank" rel="noopener" aria-label="Abrir el modelo Cinema en una pestaña nueva">
+            <div class="build-bar mini"><div class="build-dot"></div><div class="build-dot"></div><div class="build-dot"></div><div class="build-url">cinema.postudio.es</div></div>
+            <div class="model-poster m-cinema"><b>Cinema</b><i>Scroll cinematográfico</i></div>
+            <span class="model-open">Abrir modelo →</span>
+          </a>
+          <div class="model-caption">
+            <h3>Cinema</h3>
+            <p>El titular se difumina, una tarjeta sube y se abre a pantalla completa para revelar el producto. Perfecta para lanzamientos.</p>
+            <div class="model-tags"><span>Oscuro</span><span>Mockup 3D</span><span>Muy visual en vídeo</span></div>
+          </div>
+        </article>
+
+        <article class="model-card reveal">
+          <a class="model-frame" href="plantillas/02-constellation.html" target="_blank" rel="noopener" aria-label="Abrir el modelo Constellation en una pestaña nueva">
+            <div class="build-bar mini"><div class="build-dot"></div><div class="build-dot"></div><div class="build-dot"></div><div class="build-url">constellation.postudio.es</div></div>
+            <div class="model-poster m-constellation"><b>Constellation</b><i>Malla interactiva</i></div>
+            <span class="model-open">Abrir modelo →</span>
+          </a>
+          <div class="model-caption">
+            <h3>Constellation</h3>
+            <p>Una retícula de nodos que reacciona al cursor y vuelve a su sitio. Estética técnica y precisa.</p>
+            <div class="model-tags"><span>Oscuro</span><span>Interactiva</span><span>Tecnología</span></div>
+          </div>
+        </article>
+
+        <article class="model-card reveal">
+          <a class="model-frame" href="plantillas/03-aurora.html" target="_blank" rel="noopener" aria-label="Abrir el modelo Aurora en una pestaña nueva">
+            <div class="build-bar mini"><div class="build-dot"></div><div class="build-dot"></div><div class="build-dot"></div><div class="build-url">aurora.postudio.es</div></div>
+            <div class="model-poster m-aurora"><b>Aurora</b><i>Luz y editorial</i></div>
+            <span class="model-open">Abrir modelo →</span>
+          </a>
+          <div class="model-caption">
+            <h3>Aurora</h3>
+            <p>Luminosa y cálida: degradados que respiran, texto que aparece por líneas y tarjetas que se apilan al bajar.</p>
+            <div class="model-tags"><span>Claro</span><span>Elegante</span><span>Servicios</span></div>
+          </div>
+        </article>
+
+        <article class="model-card reveal">
+          <a class="model-frame" href="plantillas/04-monolith.html" target="_blank" rel="noopener" aria-label="Abrir el modelo Monolith en una pestaña nueva">
+            <div class="build-bar mini"><div class="build-dot"></div><div class="build-dot"></div><div class="build-dot"></div><div class="build-url">monolith.postudio.es</div></div>
+            <div class="model-poster m-monolith"><b>Monolith</b><i>Tipografía XXL</i></div>
+            <span class="model-open">Abrir modelo →</span>
+          </a>
+          <div class="model-caption">
+            <h3>Monolith</h3>
+            <p>Tipografía gigante y una galería que avanza en horizontal mientras bajas. Mucho carácter para marcas con personalidad.</p>
+            <div class="model-tags"><span>Oscuro</span><span>Scroll horizontal</span><span>Portfolio</span></div>
+          </div>
+        </article>
+
+        <article class="model-card reveal">
+          <a class="model-frame" href="plantillas/05-prism.html" target="_blank" rel="noopener" aria-label="Abrir el modelo Prism en una pestaña nueva">
+            <div class="build-bar mini"><div class="build-dot"></div><div class="build-dot"></div><div class="build-dot"></div><div class="build-url">prism.postudio.es</div></div>
+            <div class="model-poster m-prism"><b>Prism</b><i>Cristal y 3D</i></div>
+            <span class="model-open">Abrir modelo →</span>
+          </a>
+          <div class="model-caption">
+            <h3>Prism</h3>
+            <p>Paneles de cristal que giran con el ratón, luz que sigue al cursor y una tabla de precios animada.</p>
+            <div class="model-tags"><span>Oscuro</span><span>Cristal 3D</span><span>Producto digital</span></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="models-foot reveal">
+        <a class="btn btn-primary" href="plantillas/index.html" target="_blank" rel="noopener">Ver los cinco modelos juntos</a>
+      </div>
+    </div>
+  </section>
+
   <section class="pricing" id="precios">
     <div class="wrap">
       <div class="section-head center reveal">
