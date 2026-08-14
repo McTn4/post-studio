@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prism — Plantilla web | Post Studio</title>
+<meta name="description" content="Plantilla web minimalista con cristal, profundidad 3D, foco de cursor y tarjetas inclinables. Modelo genérico de Post Studio.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='p' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2322D3EE'/%3E%3Cstop offset='.5' stop-color='%238B5CF6'/%3E%3Cstop offset='1' stop-color='%23EC4899'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='%2307060F'/%3E%3Cpath d='M16 6L26 25H6Z' fill='url(%23p)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07060F;
+  --bg-2:#0C0A18;
+  --ink:#F0EFF7;
+  --muted:#8D89A8;
+  --line:rgba(255,255,255,.09);
+  --line-2:rgba(255,255,255,.16);
+  --v1:#8B5CF6;
+  --v2:#EC4899;
+  --v3:#22D3EE;
+  --maxw:1200px;
+  --font:'Sora',system-ui,-apple-system,sans-serif;
+  --body:'Inter',system-ui,-apple-system,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--body);background:var(--bg);color:var(--ink);line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+h1,h2,h3{font-family:var(--font);font-weight:700;letter-spacing:-.04em;line-height:1.06}
+::selection{background:var(--v1);color:#fff}
+:focus-visible{outline:2px solid var(--v3);outline-offset:3px;border-radius:8px}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.pill{display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:999px;font-size:12px;font-weight:500;
+  letter-spacing:.02em;border:1px solid var(--line-2);background:rgba(255,255,255,.04);backdrop-filter:blur(12px);color:#C7C2E4}
+.pill i{width:6px;height:6px;border-radius:50%;background:var(--v3);box-shadow:0 0 10px var(--v3);animation:bp 2.2s ease-in-out infinite}
+@keyframes bp{0%,100%{opacity:1}50%{opacity:.35}}
+.grad{background:linear-gradient(100deg,var(--v3),var(--v1) 45%,var(--v2));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* ambient orbs + cursor spotlight */
+.orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;filter:blur(90px);opacity:.42}
+.orb{position:absolute;border-radius:50%;will-change:transform}
+.o1{width:46vw;height:46vw;background:var(--v1);top:-12%;left:-8%;animation:o1 24s ease-in-out infinite}
+.o2{width:38vw;height:38vw;background:var(--v2);top:34%;right:-10%;animation:o2 29s ease-in-out infinite}
+.o3{width:34vw;height:34vw;background:var(--v3);bottom:-14%;left:28%;animation:o3 21s ease-in-out infinite}
+@keyframes o1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(12vw,16vh) scale(1.18)}}
+@keyframes o2{0%,100%{transform:translate(0,0) scale(1.1)}50%{transform:translate(-10vw,-12vh) scale(.88)}}
+@keyframes o3{0%,100%{transform:translate(0,0) scale(.92)}50%{transform:translate(8vw,-10vh) scale(1.2)}}
+.spot{position:fixed;inset:0;z-index:1;pointer-events:none;transition:opacity .5s;opacity:0;
+  background:radial-gradient(560px circle at var(--sx,50%) var(--sy,50%),rgba(139,92,246,.13),transparent 62%)}
+body.spot-on .spot{opacity:1}
+
+main,nav,footer{position:relative;z-index:2}
+
+/* nav */
+.nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:60;width:calc(100% - 32px);max-width:1140px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;padding:11px 12px 11px 22px;border-radius:999px;
+  border:1px solid transparent;transition:background .45s var(--ease),border-color .45s,box-shadow .45s,backdrop-filter .45s}
+.nav.is-stuck{background:rgba(12,10,24,.62);border-color:var(--line);backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);box-shadow:0 18px 40px -22px rgba(0,0,0,.95)}
+.nav__logo{display:flex;align-items:center;gap:10px;font-family:var(--font);font-weight:700;font-size:17px;letter-spacing:-.03em}
+.nav__mark{width:24px;height:24px;border-radius:7px;background:conic-gradient(from 180deg,var(--v3),var(--v1),var(--v2),var(--v3));
+  animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.nav__links{display:flex;gap:26px;font-size:14px;color:var(--muted)}
+.nav__links a{transition:color .3s}
+.nav__links a:hover{color:var(--ink)}
+@media(max-width:900px){.nav__links{display:none}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 26px;border-radius:999px;
+  font-size:14.5px;font-weight:600;font-family:var(--font);white-space:nowrap;
+  transition:transform .45s var(--ease),box-shadow .45s var(--ease),background .4s,border-color .4s}
+.btn--grad{position:relative;color:#fff;background:linear-gradient(100deg,var(--v1),var(--v2));
+  box-shadow:0 14px 34px -14px rgba(139,92,246,.95)}
+.btn--grad:hover{transform:translateY(-3px);box-shadow:0 22px 46px -16px rgba(236,72,153,.9)}
+.btn--grad:active{transform:translateY(0)}
+.btn--glass{border:1px solid var(--line-2);background:rgba(255,255,255,.04);backdrop-filter:blur(14px);color:var(--ink)}
+.btn--glass:hover{transform:translateY(-3px);background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.3)}
+.btn--glass:active{transform:translateY(0)}
+.btn svg{transition:transform .45s var(--ease)}
+.btn:hover svg{transform:translateX(4px)}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:140px 0 90px;overflow:hidden}
+.hero__grid{display:grid;grid-template-columns:1.02fr .98fr;gap:56px;align-items:center;width:100%}
+.hero h1{font-size:clamp(2.6rem,6vw,4.6rem);margin:26px 0 0}
+.hero__lead{margin-top:24px;color:var(--muted);font-size:clamp(1rem,1.5vw,1.13rem);font-weight:300;max-width:440px}
+.hero__row{margin-top:38px;display:flex;gap:12px;flex-wrap:wrap}
+.hero__trust{margin-top:44px;display:flex;align-items:center;gap:14px;color:var(--muted);font-size:13px}
+.avs{display:flex}
+.avs span{width:30px;height:30px;border-radius:50%;border:2px solid var(--bg);margin-left:-9px;
+  background:linear-gradient(140deg,var(--v1),var(--v2))}
+.avs span:first-child{margin-left:0}
+.avs span:nth-child(2){background:linear-gradient(140deg,var(--v3),var(--v1))}
+.avs span:nth-child(3){background:linear-gradient(140deg,var(--v2),#FBBF24)}
+.avs span:nth-child(4){background:linear-gradient(140deg,#34D399,var(--v3))}
+
+.up{opacity:0;transform:translateY(26px)}
+.is-ready .up{animation:up .95s var(--ease) forwards}
+@keyframes up{to{opacity:1;transform:none}}
+
+/* 3D glass stack */
+.stage{position:relative;height:520px;perspective:1400px;perspective-origin:50% 50%}
+.deck{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform;
+  transition:transform .8s var(--ease)}
+.pane{position:absolute;border-radius:20px;border:1px solid var(--line-2);overflow:hidden;
+  background:linear-gradient(150deg,rgba(255,255,255,.10),rgba(255,255,255,.02));
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  box-shadow:0 32px 70px -26px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.18);
+  opacity:0;transform:translateY(40px)}
+.is-ready .pane{animation:paneIn 1.15s var(--ease) forwards}
+@keyframes paneIn{to{opacity:1;transform:none}}
+
+.pane--main{left:8%;top:9%;width:72%;height:66%;padding:24px;animation-delay:.35s!important;transform:translateZ(0);
+  display:flex;flex-direction:column}
+.pane--a{right:0;top:0;width:44%;padding:18px;animation-delay:.55s!important}
+.pane--b{left:0;bottom:4%;width:52%;padding:18px;animation-delay:.7s!important}
+.pane--c{right:4%;bottom:14%;width:34%;padding:16px;animation-delay:.85s!important}
+
+.pane__hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.pane__hd b{font-family:var(--font);font-size:14px;font-weight:600}
+.dots{display:flex;gap:5px}
+.dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2)}
+.chart{display:flex;align-items:flex-end;gap:8px;height:150px;flex:1;min-height:110px}
+.chart i{flex:1;height:100%;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,var(--v1),rgba(139,92,246,.12));
+  transform-origin:bottom;animation:bar 3.2s var(--ease) infinite alternate}
+.chart i:nth-child(3n){background:linear-gradient(180deg,var(--v3),rgba(34,211,238,.12))}
+.chart i:nth-child(4n){background:linear-gradient(180deg,var(--v2),rgba(236,72,153,.12))}
+@keyframes bar{from{transform:scaleY(.28)}to{transform:scaleY(1)}}
+.pane__ft{display:flex;justify-content:space-between;margin-top:18px;font-size:11px;color:var(--muted)}
+
+.mini{display:flex;align-items:center;gap:12px}
+.mini__ic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:linear-gradient(140deg,rgba(139,92,246,.3),rgba(139,92,246,.05));border:1px solid rgba(167,139,250,.3);color:#C4B5FD}
+.mini b{display:block;font-family:var(--font);font-size:15px;font-weight:600}
+.mini span{display:block;font-size:11.5px;color:var(--muted)}
+.spark{margin-top:14px;display:flex;align-items:flex-end;gap:3px;height:34px}
+.spark i{flex:1;height:100%;border-radius:2px;background:rgba(255,255,255,.18);transform-origin:bottom;
+  animation:bar 2.4s var(--ease) infinite alternate}
+.ringWrap{display:flex;align-items:center;gap:14px}
+.ringWrap svg{width:56px;height:56px;flex-shrink:0}
+.ringWrap circle{fill:none;stroke-width:6;stroke-linecap:round}
+.ringWrap .t{stroke:rgba(255,255,255,.1)}
+.ringWrap .v{stroke:url(#pg);stroke-dasharray:132;stroke-dashoffset:34;transform:rotate(-90deg);transform-origin:center;
+  animation:ringGo 3s var(--ease) infinite alternate}
+@keyframes ringGo{from{stroke-dashoffset:120}to{stroke-dashoffset:30}}
+
+@media(max-width:960px){
+  .hero__grid{grid-template-columns:1fr;gap:48px}
+  .stage{height:420px;order:2}
+  .hero__lead{max-width:none}
+}
+@media(max-width:560px){.stage{height:340px}.pane--c{display:none}}
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+.sec{padding:130px 0}
+.sec__head{text-align:center;max-width:640px;margin:0 auto 64px}
+.sec__head h2{font-size:clamp(2rem,4.6vw,3.4rem);margin:22px 0 18px}
+.sec__head p{color:var(--muted);font-weight:300}
+
+.rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+/* tilt bento */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:18px}
+.tile{position:relative;grid-column:span 2;border-radius:22px;padding:32px;overflow:hidden;
+  border:1px solid var(--line);background:linear-gradient(165deg,rgba(255,255,255,.055),rgba(255,255,255,.012));
+  transform-style:preserve-3d;transition:transform .6s var(--ease),border-color .5s;will-change:transform}
+.tile::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .5s;pointer-events:none;
+  background:radial-gradient(400px circle at var(--tx,50%) var(--ty,50%),rgba(255,255,255,.11),transparent 62%)}
+.tile:hover{border-color:var(--line-2)}
+.tile:hover::before{opacity:1}
+.tile--wide{grid-column:span 3}
+.tile__in{transform:translateZ(38px)}
+.tile__ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:22px;
+  background:linear-gradient(140deg,rgba(139,92,246,.28),rgba(139,92,246,.04));border:1px solid rgba(167,139,250,.28);color:#C4B5FD}
+.tile h3{font-size:1.2rem;margin-bottom:10px}
+.tile p{color:var(--muted);font-size:.94rem;font-weight:300}
+@media(max-width:900px){.bento{grid-template-columns:1fr}.tile,.tile--wide{grid-column:span 1}}
+
+/* pricing */
+.toggle{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:44px;font-size:14px;color:var(--muted)}
+.sw{position:relative;width:52px;height:29px;border-radius:99px;border:1px solid var(--line-2);background:rgba(255,255,255,.05);
+  transition:background .4s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;
+  background:linear-gradient(140deg,var(--v1),var(--v2));transition:transform .45s var(--ease)}
+.sw[aria-checked="true"]::after{transform:translateX(23px)}
+.sw[aria-checked="true"]{background:rgba(139,92,246,.22)}
+.save{font-size:11px;padding:3px 9px;border-radius:99px;background:rgba(34,211,238,.14);color:var(--v3);border:1px solid rgba(34,211,238,.3)}
+
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+.plan{position:relative;border-radius:22px;border:1px solid var(--line);padding:34px 30px;
+  background:linear-gradient(170deg,rgba(255,255,255,.045),rgba(255,255,255,.01));
+  transition:transform .55s var(--ease),border-color .45s}
+.plan:hover{transform:translateY(-6px)}
+.plan--hi{border-color:transparent;background:linear-gradient(170deg,rgba(139,92,246,.16),rgba(236,72,153,.06))}
+.plan--hi::before{content:"";position:absolute;inset:-1px;border-radius:23px;padding:1px;pointer-events:none;
+  background:conic-gradient(from 0deg,var(--v3),var(--v1),var(--v2),var(--v3));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;animation:spin 7s linear infinite}
+.plan__tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-size:10.5px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;padding:5px 13px;border-radius:99px;color:#fff;
+  background:linear-gradient(100deg,var(--v1),var(--v2))}
+.plan h3{font-size:1.1rem;font-weight:600;margin-bottom:6px}
+.plan__d{color:var(--muted);font-size:.88rem;font-weight:300;min-height:40px}
+.plan__p{display:flex;align-items:flex-end;gap:6px;margin:22px 0 26px}
+.plan__p b{font-family:var(--font);font-size:2.9rem;font-weight:700;letter-spacing:-.05em;line-height:1}
+.plan__p span{color:var(--muted);font-size:13px;padding-bottom:7px}
+.plan ul{display:flex;flex-direction:column;gap:11px;margin-bottom:28px}
+.plan li{display:flex;gap:10px;font-size:.9rem;color:#CFCBE6;font-weight:300}
+.plan li svg{flex-shrink:0;margin-top:4px;color:var(--v3)}
+.plan .btn{width:100%}
+@media(max-width:900px){.plans{grid-template-columns:1fr}}
+
+/* testimonials */
+.rail{overflow:hidden;padding:6px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.rail__t{display:flex;gap:18px;width:max-content;animation:rail 42s linear infinite}
+.rail:hover .rail__t{animation-play-state:paused}
+@keyframes rail{to{transform:translateX(-50%)}}
+.tm{width:340px;border-radius:18px;border:1px solid var(--line);padding:26px;
+  background:linear-gradient(170deg,rgba(255,255,255,.05),rgba(255,255,255,.012))}
+.tm p{font-size:.94rem;color:#D5D1EA;font-weight:300;margin-bottom:20px}
+.tm footer{display:flex;align-items:center;gap:11px;font-size:12.5px;color:var(--muted)}
+.tm footer i{width:32px;height:32px;border-radius:50%;background:linear-gradient(140deg,var(--v1),var(--v3));flex-shrink:0}
+
+/* closing */
+.closing{padding:150px 0;text-align:center;position:relative}
+.closing__box{position:relative;border-radius:30px;border:1px solid var(--line);padding:80px 40px;overflow:hidden;
+  background:linear-gradient(170deg,rgba(255,255,255,.05),rgba(255,255,255,.01));backdrop-filter:blur(18px)}
+.closing__box::before{content:"";position:absolute;left:50%;top:-60%;width:760px;height:760px;transform:translateX(-50%);
+  background:radial-gradient(circle,rgba(139,92,246,.24),transparent 62%);pointer-events:none}
+.closing h2{font-size:clamp(2rem,5.4vw,3.9rem);position:relative}
+.closing p{color:var(--muted);max-width:440px;margin:22px auto 36px;font-weight:300;position:relative}
+.closing .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+@media(max-width:640px){.closing__box{padding:52px 24px}}
+
+footer.ft{border-top:1px solid var(--line);padding:42px 0}
+.ft__in{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.ft__links{display:flex;gap:24px}
+.ft__links a:hover{color:var(--ink)}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .rv,.up,.pane{opacity:1;transform:none}
+  .spot{display:none}
+}
+</style>
+</head>
+<body>
+<div class="orbs" aria-hidden="true"><span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span></div>
+<div class="spot" id="spot" aria-hidden="true"></div>
+
+<nav class="nav" id="nav">
+  <a class="nav__logo" href="#top"><span class="nav__mark"></span>Prism</a>
+  <ul class="nav__links">
+    <li><a href="#caracteristicas">Características</a></li>
+    <li><a href="#planes">Planes</a></li>
+    <li><a href="#opiniones">Opiniones</a></li>
+  </ul>
+  <a class="btn btn--grad" href="#contacto" style="padding:10px 20px;font-size:13.5px">Probar gratis</a>
+</nav>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="wrap hero__grid">
+      <div>
+        <span class="pill up" style="animation-delay:.1s"><i></i>Nueva versión disponible</span>
+        <h1 class="up" style="animation-delay:.2s">Claridad en cada <span class="grad">capa</span>.</h1>
+        <p class="hero__lead up" style="animation-delay:.32s">Una base visual translúcida, ligera y profunda. Pensada para productos que necesitan explicar mucho sin abrumar a nadie.</p>
+        <div class="hero__row up" style="animation-delay:.44s">
+          <a class="btn btn--grad" href="#planes">Empezar ahora
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn--glass" href="#caracteristicas">Ver características</a>
+        </div>
+        <div class="hero__trust up" style="animation-delay:.56s">
+          <span class="avs"><span></span><span></span><span></span><span></span></span>
+          <span>Más de 2.000 equipos ya lo usan</span>
+        </div>
+      </div>
+
+      <!-- 3D glass deck -->
+      <div class="stage" id="stage">
+        <div class="deck" id="deck">
+          <div class="pane pane--main">
+            <div class="pane__hd"><b>Actividad</b><span class="dots"><i></i><i></i><i></i></span></div>
+            <div class="chart" aria-hidden="true">
+              <i style="height:42%;animation-delay:0s"></i><i style="height:64%;animation-delay:.1s"></i><i style="height:52%;animation-delay:.2s"></i>
+              <i style="height:78%;animation-delay:.3s"></i><i style="height:60%;animation-delay:.4s"></i><i style="height:92%;animation-delay:.5s"></i>
+              <i style="height:70%;animation-delay:.6s"></i><i style="height:100%;animation-delay:.7s"></i><i style="height:82%;animation-delay:.8s"></i>
+            </div>
+            <div class="pane__ft"><span>Ene</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span></div>
+          </div>
+
+          <div class="pane pane--a">
+            <div class="mini">
+              <span class="mini__ic">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 4 6-8"/><path d="M17 7h4v4"/></svg>
+              </span>
+              <div><b>+38 %</b><span>Este trimestre</span></div>
+            </div>
+            <div class="spark" aria-hidden="true">
+              <i style="height:46%;animation-delay:0s"></i><i style="height:70%;animation-delay:.08s"></i><i style="height:54%;animation-delay:.16s"></i>
+              <i style="height:86%;animation-delay:.24s"></i><i style="height:62%;animation-delay:.32s"></i><i style="height:100%;animation-delay:.4s"></i>
+              <i style="height:74%;animation-delay:.48s"></i><i style="height:90%;animation-delay:.56s"></i>
+            </div>
+          </div>
+
+          <div class="pane pane--b">
+            <div class="ringWrap">
+              <svg viewBox="0 0 56 56" aria-hidden="true">
+                <defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#22D3EE"/><stop offset="100%" stop-color="#8B5CF6"/>
+                </linearGradient></defs>
+                <circle class="t" cx="28" cy="28" r="21"/>
+                <circle class="v" cx="28" cy="28" r="21"/>
+              </svg>
+              <div><b style="font-family:var(--font);font-size:15px;font-weight:600;display:block">Objetivo mensual</b>
+                <span style="font-size:11.5px;color:var(--muted)">74 % completado</span></div>
+            </div>
+          </div>
+
+          <div class="pane pane--c">
+            <div class="mini">
+              <span class="mini__ic">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>
+              </span>
+              <div><b>Listo</b><span>Sin errores</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ FEATURES ============ -->
+  <section class="sec" id="caracteristicas">
+    <div class="wrap">
+      <div class="sec__head rv">
+        <span class="pill"><i></i>Características</span>
+        <h2>Profundidad donde importa,<br>simpleza en todo lo demás.</h2>
+        <p>Cada superficie tiene una función: separar, agrupar o destacar. Nada de cristal por decoración.</p>
+      </div>
+
+      <div class="bento">
+        <article class="tile tile--wide rv" data-tilt>
+          <div class="tile__in">
+            <div class="tile__ic">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+            </div>
+            <h3>Sistema por capas</h3>
+            <p>Fondo, superficie y contenido siempre en el mismo orden. El usuario nunca duda de dónde está mirando.</p>
+          </div>
+        </article>
+
+        <article class="tile tile--wide rv" data-tilt>
+          <div class="tile__in">
+            <div class="tile__ic">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
+            </div>
+            <h3>Luz que responde</h3>
+            <p>El foco sigue al cursor y resalta solo el elemento activo. Una guía sutil, nunca un espectáculo.</p>
+          </div>
+        </article>
+
+        <article class="tile rv" data-tilt>
+          <div class="tile__in">
+            <div class="tile__ic">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5z"/></svg>
+            </div>
+            <h3>Ligero</h3>
+            <p>Sin librerías externas. Todo el movimiento es CSS y unas pocas líneas de código.</p>
+          </div>
+        </article>
+
+        <article class="tile rv" data-tilt>
+          <div class="tile__in">
+            <div class="tile__ic">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+            </div>
+            <h3>Adaptable</h3>
+            <p>La profundidad se reduce en pantallas pequeñas para que nada estorbe la lectura.</p>
+          </div>
+        </article>
+
+        <article class="tile rv" data-tilt>
+          <div class="tile__in">
+            <div class="tile__ic">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3a15 15 0 000 18 15 15 0 000-18z"/></svg>
+            </div>
+            <h3>Para todos</h3>
+            <p>Contraste verificado y desactivación automática del movimiento cuando el sistema lo pide.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRICING ============ -->
+  <section class="sec" id="planes" style="padding-top:20px">
+    <div class="wrap">
+      <div class="sec__head rv">
+        <span class="pill"><i></i>Planes</span>
+        <h2>Precios sin letra pequeña.</h2>
+        <p>Cambia de plan o cancela cuando quieras. Sin permanencia ni comisiones ocultas.</p>
+      </div>
+
+      <div class="toggle rv">
+        <span>Mensual</span>
+        <button class="sw" id="sw" role="switch" aria-checked="false" aria-label="Cambiar a facturación anual"></button>
+        <span>Anual</span>
+        <span class="save">−20 %</span>
+      </div>
+
+      <div class="plans">
+        <article class="plan rv">
+          <h3>Inicio</h3>
+          <p class="plan__d">Para empezar a construir sin compromiso.</p>
+          <div class="plan__p"><b data-m="0" data-a="0">0</b><span>€ / mes</span></div>
+          <ul>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Una página publicada</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Plantillas básicas</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Soporte por correo</li>
+          </ul>
+          <a class="btn btn--glass" href="#contacto">Empezar gratis</a>
+        </article>
+
+        <article class="plan plan--hi rv">
+          <span class="plan__tag">Más elegido</span>
+          <h3>Estudio</h3>
+          <p class="plan__d">Todo lo necesario para un proyecto profesional.</p>
+          <div class="plan__p"><b data-m="29" data-a="23">29</b><span>€ / mes</span></div>
+          <ul>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Páginas ilimitadas</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Dominio propio incluido</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Analítica integrada</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Soporte prioritario</li>
+          </ul>
+          <a class="btn btn--grad" href="#contacto">Elegir Estudio</a>
+        </article>
+
+        <article class="plan rv">
+          <h3>Empresa</h3>
+          <p class="plan__d">Para equipos con necesidades específicas.</p>
+          <div class="plan__p"><b data-m="79" data-a="63">79</b><span>€ / mes</span></div>
+          <ul>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Todo lo del plan Estudio</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Usuarios ilimitados</li>
+            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Acuerdo de nivel de servicio</li>
+          </ul>
+          <a class="btn btn--glass" href="#contacto">Hablar con ventas</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section class="sec" id="opiniones" style="padding-top:20px">
+    <div class="wrap sec__head rv" style="margin-bottom:48px">
+      <span class="pill"><i></i>Opiniones</span>
+      <h2>Lo que dicen quienes ya lo usan.</h2>
+    </div>
+    <div class="rail" aria-hidden="true">
+      <div class="rail__t" id="rail">
+        <article class="tm"><p>«Pasamos de una web que nadie tocaba a un sistema que el equipo actualiza solo.»</p><footer><i></i>Dirección de producto</footer></article>
+        <article class="tm"><p>«La diferencia se nota en el detalle: nada se mueve porque sí, todo tiene una razón.»</p><footer><i></i>Responsable de marca</footer></article>
+        <article class="tm"><p>«Carga rápido incluso con conexión mala. Para nuestro público eso lo era todo.»</p><footer><i></i>Fundador</footer></article>
+        <article class="tm"><p>«Nos entregaron documentación real, no un archivo suelto. Se nota el oficio.»</p><footer><i></i>Equipo técnico</footer></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CLOSING ============ -->
+  <section class="closing" id="contacto">
+    <div class="wrap">
+      <div class="closing__box rv">
+        <h2>Empieza hoy.<br>Cambia de idea mañana.</h2>
+        <p>Sin tarjeta, sin llamadas de venta. Crea tu cuenta y prueba la plantilla completa durante 14 días.</p>
+        <div class="row">
+          <a class="btn btn--grad" href="#">Crear cuenta
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn--glass" href="#planes">Comparar planes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="ft">
+  <div class="wrap ft__in">
+    <span>© <span id="yr"></span> Prism — Plantilla genérica</span>
+    <div class="ft__links"><a href="#">Aviso legal</a><a href="#">Privacidad</a><a href="#">Cookies</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  var rail = document.getElementById('rail');
+  if(rail) rail.innerHTML += rail.innerHTML;
+
+  var nav = document.getElementById('nav');
+  var onScroll = function(){ nav.classList.toggle('is-stuck', window.scrollY > 24); };
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.15, rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.rv').forEach(function(el,i){
+    el.style.transitionDelay = (i%3)*90 + 'ms'; io.observe(el);
+  });
+
+  /* billing switch */
+  var sw = document.getElementById('sw');
+  sw.addEventListener('click', function(){
+    var annual = sw.getAttribute('aria-checked') !== 'true';
+    sw.setAttribute('aria-checked', annual ? 'true' : 'false');
+    document.querySelectorAll('.plan__p b').forEach(function(b){
+      var from = parseInt(b.textContent,10) || 0;
+      var to = parseInt(annual ? b.dataset.a : b.dataset.m, 10);
+      var t0 = 0;
+      var step = function(ts){
+        if(!t0) t0 = ts;
+        var t = Math.min((ts-t0)/450,1);
+        b.textContent = Math.round(from + (to-from)*(1-Math.pow(1-t,3)));
+        if(t<1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  });
+
+  document.body.classList.add('is-ready');
+  if(reduce) return;
+
+  /* cursor spotlight */
+  var spot = document.getElementById('spot');
+  if(window.matchMedia('(pointer:fine)').matches){
+    var q = 0;
+    window.addEventListener('pointermove', function(e){
+      cancelAnimationFrame(q);
+      q = requestAnimationFrame(function(){
+        spot.style.setProperty('--sx', e.clientX + 'px');
+        spot.style.setProperty('--sy', e.clientY + 'px');
+        document.body.classList.add('spot-on');
+      });
+    }, {passive:true});
+  }
+
+  /* 3D deck parallax */
+  var stage = document.getElementById('stage');
+  var deck  = document.getElementById('deck');
+  var panes = Array.prototype.slice.call(document.querySelectorAll('.pane'));
+  var depth = [0, 70, 46, 100];
+  var settled = false;
+  /* the entry animation fills forwards and would win over inline transforms,
+     so drop it (keeping the end state) before the parallax takes over */
+  function settle(){
+    if(settled) return;
+    settled = true;
+    panes.forEach(function(p,i){
+      p.style.animation = 'none';
+      p.style.opacity = '1';
+      p.style.transform = 'translateZ(' + depth[i%depth.length] + 'px)';
+    });
+  }
+  if(stage && window.matchMedia('(pointer:fine)').matches){
+    stage.addEventListener('pointermove', function(e){
+      settle();
+      var r = stage.getBoundingClientRect();
+      var x = (e.clientX - r.left)/r.width - .5;
+      var y = (e.clientY - r.top)/r.height - .5;
+      deck.style.transition = 'transform .25s linear';
+      deck.style.transform = 'rotateY(' + (x*15) + 'deg) rotateX(' + (-y*13) + 'deg)';
+      panes.forEach(function(p,i){
+        p.style.transform = 'translateZ(' + depth[i%depth.length] + 'px) translate(' + (x*depth[i%depth.length]*0.16) + 'px,' + (y*depth[i%depth.length]*0.16) + 'px)';
+      });
+    });
+    stage.addEventListener('pointerleave', function(){
+      deck.style.transition = 'transform .9s cubic-bezier(.22,1,.36,1)';
+      deck.style.transform = '';
+      panes.forEach(function(p,i){ p.style.transform = 'translateZ(' + depth[i%depth.length] + 'px)'; });
+    });
+    /* settle the resting depth once the entry animation ends */
+    setTimeout(settle, 2200);
+  }
+
+  /* tilt tiles */
+  document.querySelectorAll('[data-tilt]').forEach(function(el){
+    el.style.perspective = '900px';
+    el.addEventListener('pointermove', function(e){
+      var r = el.getBoundingClientRect();
+      var x = (e.clientX - r.left)/r.width;
+      var y = (e.clientY - r.top)/r.height;
+      el.style.setProperty('--tx', (x*100) + '%');
+      el.style.setProperty('--ty', (y*100) + '%');
+      el.style.transition = 'transform .18s linear, border-color .5s';
+      el.style.transform = 'perspective(900px) rotateY(' + ((x-.5)*9) + 'deg) rotateX(' + ((.5-y)*9) + 'deg) translateY(-5px)';
+    });
+    el.addEventListener('pointerleave', function(){
+      el.style.transition = 'transform .8s cubic-bezier(.22,1,.36,1), border-color .5s';
+      el.style.transform = '';
+    });
+  });
+})();
+</script>
+</body>
+</html>

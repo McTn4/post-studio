@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Constellation — Plantilla web | Post Studio</title>
+<meta name="description" content="Plantilla web minimalista con malla interactiva en canvas y física de resortes. Modelo genérico de Post Studio.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2304060A'/%3E%3Cpath d='M9 9L23 11L16 22Z' stroke='%2338BDF8' stroke-width='1.4' fill='none' opacity='.55'/%3E%3Cg fill='%2338BDF8'%3E%3Ccircle cx='9' cy='9' r='2.6'/%3E%3Ccircle cx='23' cy='11' r='2.6'/%3E%3Ccircle cx='16' cy='22' r='2.6'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04060A;
+  --bg-2:#080C13;
+  --ink:#EEF3F8;
+  --muted:#7C8899;
+  --line:rgba(255,255,255,.08);
+  --line-2:rgba(255,255,255,.14);
+  --accent:#38BDF8;
+  --accent-2:#0EA5E9;
+  --accent-dim:rgba(56,189,248,.14);
+  --maxw:1280px;
+  --font:'Space Grotesk',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Consolas,monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg,canvas{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+h1,h2,h3{letter-spacing:-.035em;line-height:1.05;font-weight:700}
+::selection{background:var(--accent);color:#04060A}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.mono{font-family:var(--mono)}
+.tag{
+  display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+  border:1px solid rgba(56,189,248,.28);background:rgba(56,189,248,.07);
+  padding:6px 13px;border-radius:999px;
+}
+.tag i{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 9px var(--accent);animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 24px;border-radius:8px;
+  font-size:14px;font-weight:600;transition:transform .4s var(--ease),background .35s,box-shadow .4s var(--ease),border-color .35s;white-space:nowrap}
+.btn--main{background:var(--accent);color:#04060A;box-shadow:0 12px 30px -12px rgba(56,189,248,.85)}
+.btn--main:hover{transform:translateY(-2px);background:#5CCCFB;box-shadow:0 20px 40px -14px rgba(56,189,248,1)}
+.btn--main:active{transform:translateY(0)}
+.btn--line{border:1px solid var(--line-2);color:var(--ink);background:rgba(255,255,255,.02)}
+.btn--line:hover{transform:translateY(-2px);border-color:var(--accent);color:var(--accent);background:rgba(56,189,248,.06)}
+.btn--line:active{transform:translateY(0)}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+  padding:16px 28px;border-bottom:1px solid transparent;transition:background .4s var(--ease),border-color .4s,backdrop-filter .4s}
+.nav.is-stuck{background:rgba(4,6,10,.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom-color:var(--line)}
+.nav__logo{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:-.02em}
+.nav__logo span{width:9px;height:9px;border-radius:2px;background:var(--accent);box-shadow:0 0 12px var(--accent);animation:pulse 2.6s ease-in-out infinite}
+.nav__links{display:flex;gap:28px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.nav__links a{transition:color .3s}
+.nav__links a:hover{color:var(--accent)}
+@media(max-width:860px){.nav__links{display:none}}
+
+/* =========================================================
+   HERO / CANVAS
+   ========================================================= */
+.hero{position:relative;height:100vh;height:100svh;min-height:600px;overflow:hidden;isolation:isolate;
+  border-bottom:1px solid var(--line)}
+#mesh{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+.hero__veil{position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:
+    radial-gradient(58% 46% at 50% 46%,rgba(4,6,10,.92) 0%,rgba(4,6,10,.62) 42%,transparent 74%),
+    linear-gradient(180deg,rgba(4,6,10,.85) 0%,transparent 22%,transparent 62%,rgba(4,6,10,.95) 100%)}
+.hero__scan{position:absolute;inset:0;pointer-events:none;z-index:3;opacity:.25;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px)}
+
+.hero__in{position:relative;z-index:4;height:100%;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;padding:96px 24px 0;pointer-events:none}
+.hero__in > *{pointer-events:auto}
+.hero h1{font-size:clamp(1.9rem,9.6vw,8.6rem);font-weight:700;letter-spacing:-.055em;text-transform:uppercase;margin:26px 0 0}
+.hero h1 .wd{display:inline-block;white-space:nowrap}
+.hero h1 .ch{display:inline-block;opacity:0;transform:translateY(.5em) rotateX(-55deg);transform-origin:50% 100%}
+.is-ready .hero h1 .ch{animation:chIn .95s var(--ease) forwards}
+@keyframes chIn{to{opacity:1;transform:none}}
+.hero h1 em{font-style:normal;color:var(--accent);text-shadow:0 0 44px rgba(56,189,248,.55)}
+.hero__sub{margin-top:24px;max-width:560px;color:var(--muted);font-size:clamp(.95rem,1.5vw,1.1rem);opacity:0;transform:translateY(16px)}
+.hero__cta{margin-top:38px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;opacity:0;transform:translateY(16px)}
+.hero__tag{opacity:0;transform:translateY(16px)}
+.is-ready .hero__tag{animation:up .9s var(--ease) .15s forwards}
+.is-ready .hero__sub{animation:up .9s var(--ease) 1.05s forwards}
+.is-ready .hero__cta{animation:up .9s var(--ease) 1.2s forwards}
+@keyframes up{to{opacity:1;transform:none}}
+
+.hero__hud{position:absolute;left:0;right:0;bottom:0;z-index:5;border-top:1px solid var(--line);
+  background:linear-gradient(180deg,transparent,rgba(4,6,10,.65));backdrop-filter:blur(6px)}
+.hud{display:flex;justify-content:space-between;gap:18px;padding-top:14px;padding-bottom:14px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex-wrap:wrap}
+.hud b{color:var(--accent);font-weight:500}
+@media(max-width:640px){.hud{font-size:10px;gap:12px}.hud > *:nth-child(3),.hud > *:nth-child(4){display:none}}
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+.sec{position:relative;padding:120px 0}
+.sec__head{max-width:660px;margin-bottom:60px}
+.sec__head h2{font-size:clamp(1.9rem,4.4vw,3.2rem);margin:20px 0 16px}
+.sec__head p{color:var(--muted);font-size:1.02rem}
+
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+/* numbered list with hover accent */
+.split{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px;align-items:start}
+.split__sticky{position:sticky;top:120px}
+.steps{border-top:1px solid var(--line)}
+.step{position:relative;display:grid;grid-template-columns:56px 1fr;gap:20px;padding:30px 0;
+  border-bottom:1px solid var(--line);transition:padding-left .5s var(--ease)}
+.step::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent);
+  transform:scaleY(0);transform-origin:top;transition:transform .55s var(--ease)}
+.step:hover{padding-left:22px}
+.step:hover::before{transform:scaleY(1)}
+.step__n{font-family:var(--mono);font-size:12px;color:var(--accent);padding-top:5px;letter-spacing:.1em}
+.step h3{font-size:1.32rem;margin-bottom:8px;transition:color .4s}
+.step:hover h3{color:var(--accent)}
+.step p{color:var(--muted);font-size:.96rem;max-width:520px}
+@media(max-width:900px){.split{grid-template-columns:1fr;gap:44px}.split__sticky{position:static}}
+
+/* card grid */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{position:relative;border:1px solid var(--line);border-radius:14px;padding:30px;overflow:hidden;
+  background:linear-gradient(170deg,rgba(255,255,255,.035),rgba(255,255,255,.008));
+  transition:transform .55s var(--ease),border-color .45s}
+.card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;opacity:0;
+  transition:opacity .45s;background:radial-gradient(340px circle at var(--cx,50%) var(--cy,50%),rgba(56,189,248,.15),transparent 62%)}
+.card:hover{transform:translateY(-6px);border-color:rgba(56,189,248,.35)}
+.card:hover::before{opacity:1}
+.card__k{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--accent);margin-bottom:22px;display:block}
+.card h3{font-size:1.2rem;margin-bottom:10px}
+.card p{color:var(--muted);font-size:.93rem}
+.card__line{margin-top:26px;height:1px;background:var(--line);position:relative;overflow:hidden}
+.card__line::after{content:"";position:absolute;inset:0;background:var(--accent);transform:translateX(-101%);transition:transform .7s var(--ease)}
+.card:hover .card__line::after{transform:none}
+@media(max-width:900px){.grid3{grid-template-columns:1fr}}
+
+/* metric band */
+.band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(56,189,248,.05),transparent)}
+.band__in{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.band__c{padding:48px 26px;border-right:1px solid var(--line);text-align:center}
+.band__c:last-child{border-right:0}
+.band__c b{display:block;font-size:clamp(2rem,4.2vw,3.1rem);letter-spacing:-.05em;font-weight:700}
+.band__c span{display:block;margin-top:8px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted)}
+@media(max-width:760px){.band__in{grid-template-columns:repeat(2,1fr)}
+  .band__c{border-bottom:1px solid var(--line)}.band__c:nth-child(2n){border-right:0}}
+
+/* ticker */
+.ticker{overflow:hidden;padding:22px 0;border-bottom:1px solid var(--line);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.ticker__t{display:flex;gap:44px;width:max-content;animation:tick 28s linear infinite;font-family:var(--mono);
+  font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.ticker__t b{color:var(--accent);font-weight:400}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* closing */
+.closing{padding:140px 0;text-align:center;position:relative;overflow:hidden}
+.closing::before{content:"";position:absolute;left:50%;top:50%;width:900px;height:900px;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(56,189,248,.11),transparent 60%);pointer-events:none}
+.closing h2{font-size:clamp(2rem,6vw,4.4rem);position:relative}
+.closing p{color:var(--muted);max-width:480px;margin:22px auto 36px;position:relative}
+.closing .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+
+footer.ft{border-top:1px solid var(--line);padding:40px 0}
+.ft__in{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;font-family:var(--mono);
+  font-size:11.5px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.ft__in a:hover{color:var(--accent)}
+.ft__links{display:flex;gap:22px}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .reveal{opacity:1;transform:none}
+  .hero h1 .ch,.hero__sub,.hero__cta,.hero__tag{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <a class="nav__logo" href="#top"><span></span>CONSTELLATION</a>
+  <ul class="nav__links">
+    <li><a href="#sistema">Sistema</a></li>
+    <li><a href="#modulos">Módulos</a></li>
+    <li><a href="#datos">Datos</a></li>
+  </ul>
+  <a class="btn btn--main" href="#contacto" style="padding:10px 18px;font-size:13px">Solicitar acceso</a>
+</nav>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero" id="hero">
+    <canvas id="mesh" aria-hidden="true"></canvas>
+    <div class="hero__veil" aria-hidden="true"></div>
+    <div class="hero__scan" aria-hidden="true"></div>
+
+    <div class="hero__in">
+      <span class="tag hero__tag"><i></i>Malla dinámica en tiempo real</span>
+      <h1 data-split>Constellation</h1>
+      <p class="hero__sub">Mueve el cursor sobre la retícula y observa cómo la estructura responde. Movimiento con propósito: cada nodo vuelve exactamente a su sitio.</p>
+      <div class="hero__cta">
+        <a class="btn btn--main" href="#sistema">Explorar el sistema
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn--line" href="#contacto">Hablar con el equipo</a>
+      </div>
+    </div>
+
+    <div class="hero__hud">
+      <div class="wrap hud">
+        <span>Nodos activos <b id="hudNodes">—</b></span>
+        <span>Enlaces <b id="hudLinks">—</b></span>
+        <span>Motor <b>resorte · amortiguación</b></span>
+        <span>Estado <b>estable</b></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ TICKER ============ -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__t" id="tk">
+      <span>Interfaz</span><b>/</b><span>Movimiento</span><b>/</b><span>Rendimiento</span><b>/</b>
+      <span>Accesibilidad</span><b>/</b><span>Escalabilidad</span><b>/</b><span>Detalle</span><b>/</b>
+    </div>
+  </div>
+
+  <!-- ============ SPLIT ============ -->
+  <section class="sec" id="sistema">
+    <div class="wrap split">
+      <div class="split__sticky reveal">
+        <span class="tag"><i></i>Sistema</span>
+        <h2 style="font-size:clamp(1.9rem,4.2vw,3rem);margin:22px 0 16px">Estructura antes<br>que decoración.</h2>
+        <p style="color:var(--muted)">Un método de cuatro fases que convierte una idea difusa en un producto claro, medible y listo para crecer.</p>
+      </div>
+
+      <div class="steps">
+        <article class="step reveal">
+          <div class="step__n">01</div>
+          <div><h3>Diagnóstico</h3><p>Entendemos el objetivo real antes de tocar un píxel. Qué se mide, qué se decide, qué sobra.</p></div>
+        </article>
+        <article class="step reveal">
+          <div class="step__n">02</div>
+          <div><h3>Arquitectura</h3><p>Definimos jerarquía, recorrido y estados. La retícula que sostiene todo lo demás.</p></div>
+        </article>
+        <article class="step reveal">
+          <div class="step__n">03</div>
+          <div><h3>Interfaz</h3><p>Tipografía, color y ritmo. El movimiento entra solo cuando aclara algo, nunca por adorno.</p></div>
+        </article>
+        <article class="step reveal">
+          <div class="step__n">04</div>
+          <div><h3>Puesta en marcha</h3><p>Optimización, pruebas reales en dispositivo y despliegue. Con documentación para tu equipo.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CARDS ============ -->
+  <section class="sec" id="modulos" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec__head reveal">
+        <span class="tag"><i></i>Módulos</span>
+        <h2>Bloques que encajan solos.</h2>
+        <p>Piezas independientes, coherentes entre sí y listas para combinar en cualquier orden.</p>
+      </div>
+
+      <div class="grid3">
+        <article class="card reveal">
+          <span class="card__k">M · 01</span>
+          <h3>Núcleo visual</h3>
+          <p>Tokens de color, escala tipográfica y espaciado definidos una sola vez y aplicados en todas partes.</p>
+          <div class="card__line"></div>
+        </article>
+        <article class="card reveal">
+          <span class="card__k">M · 02</span>
+          <h3>Capa de movimiento</h3>
+          <p>Curvas y duraciones consistentes, con desactivación automática para quien prefiere menos animación.</p>
+          <div class="card__line"></div>
+        </article>
+        <article class="card reveal">
+          <span class="card__k">M · 03</span>
+          <h3>Contenido flexible</h3>
+          <p>Textos, imágenes y datos intercambiables sin romper la composición ni la jerarquía.</p>
+          <div class="card__line"></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BAND ============ -->
+  <section class="band" id="datos">
+    <div class="wrap band__in">
+      <div class="band__c reveal"><b data-count="60" data-suffix=" fps">0</b><span>Animación</span></div>
+      <div class="band__c reveal"><b data-count="0" data-suffix="" data-text="0 kb">0</b><span>Librerías externas</span></div>
+      <div class="band__c reveal"><b data-count="4" data-suffix="">0</b><span>Fases del método</span></div>
+      <div class="band__c reveal"><b data-count="100" data-suffix=" %">0</b><span>Personalizable</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CLOSING ============ -->
+  <section class="closing" id="contacto">
+    <div class="wrap">
+      <h2 class="reveal">Construyamos<br>tu constelación.</h2>
+      <p class="reveal">Escríbenos y te enviamos una propuesta con alcance, plazos y precio cerrado en 48 horas.</p>
+      <div class="row reveal">
+        <a class="btn btn--main" href="#">Empezar ahora
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn--line" href="#sistema">Ver el método</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="ft">
+  <div class="wrap ft__in">
+    <span>© <span id="yr"></span> Constellation — Plantilla genérica</span>
+    <div class="ft__links"><a href="#">Legal</a><a href="#">Privacidad</a><a href="#">Cookies</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var clamp = function(v,a,b){ return v<a?a:(v>b?b:v); };
+  var easeOut = function(t){ return 1-Math.pow(1-t,3); };
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  var tk = document.getElementById('tk');
+  if(tk) tk.innerHTML += tk.innerHTML;
+
+  /* headline: split into animated characters, grouped per word so a long
+     word never breaks in the middle on narrow screens */
+  document.querySelectorAll('[data-split]').forEach(function(el){
+    var txt = el.textContent.trim(), words = txt.split(/\s+/), n = 0, out = '';
+    words.forEach(function(w, wi){
+      out += '<span class="wd">';
+      for(var k=0;k<w.length;k++){
+        out += '<span class="ch" style="animation-delay:' + (0.35 + n*0.038) + 's">' + w[k] + '</span>';
+        n++;
+      }
+      out += '</span>';
+      if(wi < words.length-1){ out += ' '; n++; }
+    });
+    el.innerHTML = out;
+    el.setAttribute('aria-label', txt);
+  });
+
+  var nav = document.getElementById('nav');
+  var onNav = function(){ nav.classList.toggle('is-stuck', window.scrollY > 30); };
+  onNav();
+  window.addEventListener('scroll', onNav, {passive:true});
+
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.16, rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el,i){
+    el.style.transitionDelay = (i%3)*80 + 'ms'; io.observe(el);
+  });
+
+  var cio = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      var el = e.target;
+      if(el.dataset.text){ el.textContent = el.dataset.text; return; }
+      var target = parseFloat(el.dataset.count), suf = el.dataset.suffix || '', t0 = 0;
+      var step = function(ts){
+        if(!t0) t0 = ts;
+        var t = clamp((ts-t0)/1300,0,1);
+        el.textContent = Math.round(target*easeOut(t)) + suf;
+        if(t<1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }, {threshold:.5});
+  document.querySelectorAll('[data-count]').forEach(function(el){ cio.observe(el); });
+
+  document.querySelectorAll('.card').forEach(function(c){
+    c.addEventListener('pointermove', function(e){
+      var r = c.getBoundingClientRect();
+      c.style.setProperty('--cx',(e.clientX-r.left)+'px');
+      c.style.setProperty('--cy',(e.clientY-r.top)+'px');
+    });
+  });
+
+  document.body.classList.add('is-ready');
+
+  /* =========================================================
+     INTERACTIVE MESH — spring / damping physics on a grid
+     ========================================================= */
+  var host   = document.getElementById('hero');
+  var canvas = document.getElementById('mesh');
+  var ctx    = canvas.getContext('2d', {alpha:false});
+  if(!ctx) return;
+
+  var W = 0, H = 0, cols = 0, rows = 0, spacing = 56;
+  var nodes = [];                 /* flat array, index = c*rows + r */
+  var raf = 0, visible = true, last = performance.now();
+  var ACCENT = '56,189,248', BASE = '255,255,255', BG = '#04060A';
+
+  var ptr = { x:-9999, y:-9999, px:-9999, py:-9999, vx:0, vy:0, r:210, idle:0, auto:true };
+  var coarse = !window.matchMedia('(pointer:fine)').matches;
+
+  function build(){
+    var rect = host.getBoundingClientRect();
+    var dpr  = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.round(rect.width); H = Math.round(rect.height);
+    canvas.width = W*dpr; canvas.height = H*dpr;
+    canvas.style.width = W+'px'; canvas.style.height = H+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+
+    spacing = W < 700 ? 74 : (W < 1200 ? 62 : 56);
+    cols = Math.ceil(W/spacing)+1;
+    rows = Math.ceil(H/spacing)+1;
+
+    nodes = new Array(cols*rows);
+    for(var c=0;c<cols;c++){
+      for(var r=0;r<rows;r++){
+        var x = c*spacing, y = r*spacing;
+        nodes[c*rows+r] = {
+          x:x, y:y, vx:0, vy:0, bx:x, by:y,
+          rad: Math.random()*1.1 + 1.1,
+          phase: Math.random()*Math.PI*2,
+          label: (c*7).toString(16).toUpperCase() + ':' + (r*11).toString(16).toUpperCase()
+        };
+      }
+    }
+    document.getElementById('hudNodes').textContent = nodes.length;
+    document.getElementById('hudLinks').textContent = (cols-1)*rows + cols*(rows-1);
+  }
+
+  /* pointer input, scoped to the hero */
+  function setPtr(x,y){ ptr.x = x; ptr.y = y; ptr.idle = 0; ptr.auto = false; }
+  host.addEventListener('pointermove', function(e){
+    var r = host.getBoundingClientRect();
+    setPtr(e.clientX-r.left, e.clientY-r.top);
+  }, {passive:true});
+  host.addEventListener('pointerleave', function(){ ptr.x = -9999; ptr.y = -9999; ptr.auto = true; }, {passive:true});
+  host.addEventListener('touchmove', function(e){
+    var t = e.touches[0]; if(!t) return;
+    var r = host.getBoundingClientRect();
+    setPtr(t.clientX-r.left, t.clientY-r.top);
+  }, {passive:true});
+
+  /* pause when the hero is off-screen */
+  var vio = new IntersectionObserver(function(es){
+    visible = es[0].isIntersecting;
+    if(visible){ last = performance.now(); raf = requestAnimationFrame(loop); }
+    else cancelAnimationFrame(raf);
+  }, {threshold:0});
+  vio.observe(host);
+
+  var SPRING = 17, DAMP = 0.83, MAXD = 78, MAXD2 = MAXD*MAXD;
+
+  function draw(dt, t){
+    /* an automatic attractor keeps the mesh alive without a cursor */
+    if(ptr.auto || coarse){
+      ptr.x = W*(0.5 + 0.31*Math.sin(t*0.00042));
+      ptr.y = H*(0.5 + 0.26*Math.sin(t*0.00067 + 1.1));
+    }
+    ptr.vx = (ptr.x-ptr.px)/(dt*1000 || 1);
+    ptr.vy = (ptr.y-ptr.py)/(dt*1000 || 1);
+    ptr.px = ptr.x; ptr.py = ptr.y;
+    var speed = Math.sqrt(ptr.vx*ptr.vx + ptr.vy*ptr.vy);
+
+    ctx.fillStyle = BG;
+    ctx.fillRect(0,0,W,H);
+
+    var i, n;
+    for(i=0;i<nodes.length;i++){
+      n = nodes[i];
+      n.phase += dt*2.6;
+
+      var dx = ptr.x-n.x, dy = ptr.y-n.y;
+      var d = Math.sqrt(dx*dx+dy*dy);
+      if(d < ptr.r && d > 0.001){
+        var power = 1 - d/ptr.r;
+        var force = power * (1350 + speed*140);
+        n.vx -= (dx/d)*force*dt;
+        n.vy -= (dy/d)*force*dt;
+      }
+      n.vx += (n.bx-n.x)*SPRING*dt;
+      n.vy += (n.by-n.y)*SPRING*dt;
+      n.vx *= DAMP; n.vy *= DAMP;
+      n.x += n.vx*dt*60;
+      n.y += n.vy*dt*60;
+    }
+
+    /* links: grid neighbours only — same look, a fraction of the cost */
+    ctx.lineWidth = .7;
+    for(var c=0;c<cols;c++){
+      for(var r=0;r<rows;r++){
+        n = nodes[c*rows+r];
+        link(n, c+1<cols ? nodes[(c+1)*rows+r] : null);
+        link(n, r+1<rows ? nodes[c*rows+r+1] : null);
+      }
+    }
+    function link(a,b){
+      if(!b) return;
+      var dx = a.x-b.x, dy = a.y-b.y, d2 = dx*dx+dy*dy;
+      if(d2 > MAXD2) return;
+      var alpha = (1 - Math.sqrt(d2)/MAXD) * .26;
+      ctx.strokeStyle = 'rgba(' + BASE + ',' + alpha.toFixed(3) + ')';
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    }
+
+    /* nodes + proximity readouts */
+    ctx.font = '9px ui-monospace, SFMono-Regular, Consolas, monospace';
+    for(i=0;i<nodes.length;i++){
+      n = nodes[i];
+      var ddx = ptr.x-n.x, ddy = ptr.y-n.y;
+      var dist = Math.sqrt(ddx*ddx+ddy*ddy);
+      var near = dist < ptr.r;
+      var a2 = near ? 0.95 : 0.28 + Math.sin(n.phase)*0.09;
+
+      ctx.fillStyle = 'rgba(' + (near?ACCENT:BASE) + ',' + a2.toFixed(3) + ')';
+      var rad = near ? n.rad*2.1 : n.rad + Math.sin(n.phase)*0.3;
+      ctx.beginPath(); ctx.arc(n.x,n.y,Math.max(.5,rad),0,6.2832); ctx.fill();
+
+      if(dist < 96){
+        var ring = ((n.phase*18)%30) + 4;
+        ctx.strokeStyle = 'rgba(' + ACCENT + ',' + ((1-ring/34)*0.38).toFixed(3) + ')';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(n.x,n.y,ring,0,6.2832); ctx.stroke();
+        ctx.fillStyle = 'rgba(' + ACCENT + ',.8)';
+        ctx.fillText(n.label, n.x+11, n.y-11);
+        ctx.lineWidth = .7;
+      }
+    }
+  }
+
+  function loop(now){
+    var dt = Math.min((now-last)/1000, 0.05);
+    last = now;
+    draw(dt, now);
+    raf = requestAnimationFrame(loop);
+  }
+
+  function still(){
+    /* single static frame for reduced-motion */
+    ctx.fillStyle = BG; ctx.fillRect(0,0,W,H);
+    ctx.lineWidth = .7;
+    for(var c=0;c<cols;c++) for(var r=0;r<rows;r++){
+      var n = nodes[c*rows+r];
+      if(c+1<cols){ var b = nodes[(c+1)*rows+r];
+        ctx.strokeStyle='rgba('+BASE+',.1)';ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(b.x,b.y);ctx.stroke(); }
+      if(r+1<rows){ var b2 = nodes[c*rows+r+1];
+        ctx.strokeStyle='rgba('+BASE+',.1)';ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(b2.x,b2.y);ctx.stroke(); }
+      ctx.fillStyle='rgba('+BASE+',.28)';
+      ctx.beginPath();ctx.arc(n.x,n.y,n.rad,0,6.2832);ctx.fill();
+    }
+  }
+
+  var rt;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){ build(); if(reduce) still(); }, 160);
+  });
+
+  build();
+  if(reduce){ vio.disconnect(); still(); }
+  else { raf = requestAnimationFrame(loop); }
+})();
+</script>
+</body>
+</html>
