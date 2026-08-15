@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plantillas — Post Studio</title>
+<meta name="description" content="Cinco modelos de web minimalistas y modernos, con animaciones y efectos, creados por Post Studio. Genéricos y adaptables a cualquier sector.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='b' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%232E7CF6'/%3E%3Cstop offset='1' stop-color='%238FBBFF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23b)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF; --bg-soft:#F4F7FC; --card:#FFFFFF;
+  --ink:#05070C; --ink-soft:#232C38; --muted:#667080;
+  --line:rgba(5,7,12,.09); --nav-bg:rgba(255,255,255,.72);
+  --blue-300:#8FBBFF; --blue-500:#2E7CF6; --blue-600:#1660DB; --blue-950:#020B29;
+  --radius:22px; --maxw:1320px;
+  --font-display:'Manrope',sans-serif; --font-body:'Inter',sans-serif; --font-mono:'IBM Plex Mono',monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+html[data-theme="dark"]{
+  --bg:#090C13; --bg-soft:#10141F; --card:#131826; --ink:#F4F6FA; --ink-soft:#C9D2E0; --muted:#8B94A8;
+  --line:rgba(255,255,255,.10); --nav-bg:rgba(9,12,19,.7);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink);line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background-color .35s ease,color .35s ease}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+h1,h2,h3{font-family:var(--font-display);letter-spacing:-.03em;line-height:1.06}
+::selection{background:var(--blue-500);color:#fff}
+:focus-visible{outline:2px solid var(--blue-500);outline-offset:3px;border-radius:8px}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-600);
+  display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--blue-500)}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:50;background:var(--nav-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line)}
+.nav__in{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:15px;padding-bottom:15px}
+.nav__logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;letter-spacing:-.04em;font-size:17px}
+.nav__mark{width:24px;height:24px;border-radius:7px;background:linear-gradient(140deg,var(--blue-500),var(--blue-300));
+  box-shadow:0 6px 16px -5px rgba(46,124,246,.8)}
+.nav__act{display:flex;align-items:center;gap:10px}
+.iconbtn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+  transition:background .3s,transform .4s var(--ease)}
+.iconbtn:hover{background:var(--bg-soft);transform:translateY(-2px)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 22px;border-radius:12px;
+  font-size:14px;font-weight:600;transition:transform .45s var(--ease),box-shadow .45s var(--ease),background .3s}
+.btn--p{background:var(--blue-600);color:#fff;box-shadow:0 12px 26px -12px rgba(22,96,219,.9)}
+.btn--p:hover{transform:translateY(-2px);box-shadow:0 18px 34px -14px rgba(22,96,219,1)}
+.btn--g{border:1px solid var(--line);color:var(--ink)}
+.btn--g:hover{transform:translateY(-2px);background:var(--bg-soft)}
+.btn svg{transition:transform .4s var(--ease)}
+.btn:hover svg{transform:translateX(3px)}
+
+/* hero */
+.hd{padding:96px 0 62px;position:relative;overflow:hidden}
+.hd::before{content:"";position:absolute;top:-260px;left:50%;transform:translateX(-50%);width:900px;height:640px;
+  background:radial-gradient(ellipse,rgba(46,124,246,.16),transparent 65%);pointer-events:none}
+.hd h1{font-size:clamp(2.3rem,5.6vw,4.2rem);font-weight:800;margin:22px 0 20px;max-width:15ch;position:relative}
+.hd p{color:var(--muted);font-size:1.08rem;max-width:560px;position:relative}
+.hd__row{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px;position:relative}
+.hd__facts{display:flex;gap:38px;flex-wrap:wrap;margin-top:56px;padding-top:26px;border-top:1px solid var(--line);position:relative}
+.hd__facts div b{display:block;font-family:var(--font-display);font-size:1.5rem;font-weight:800;letter-spacing:-.04em}
+.hd__facts div span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+
+/* grid */
+.gal{padding:20px 0 120px}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+@media(max-width:960px){.cards{grid-template-columns:1fr}}
+
+.tpl{position:relative;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card);
+  transition:transform .6s var(--ease),box-shadow .6s var(--ease),border-color .4s;display:flex;flex-direction:column}
+.tpl:hover{transform:translateY(-8px);box-shadow:0 40px 70px -40px rgba(5,7,12,.4);border-color:var(--blue-300)}
+.tpl--wide{grid-column:1/-1}
+
+.tpl__view{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--blue-950);border-bottom:1px solid var(--line)}
+.tpl--wide .tpl__view{aspect-ratio:21/9}
+.tpl__poster{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;transition:opacity .8s ease;overflow:hidden}
+.tpl__poster::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.5))}
+.tpl__poster::after{content:"";position:absolute;top:0;left:-60%;width:45%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.16),transparent);animation:sweep 5.5s var(--ease) infinite}
+@keyframes sweep{0%{transform:translateX(0)}55%,100%{transform:translateX(360%)}}
+.tpl__poster b,.tpl__poster i,.tpl__poster u{position:relative;z-index:2}
+.tpl__poster b{font-family:var(--font-display);font-size:clamp(1.9rem,4.2vw,3rem);font-weight:800;letter-spacing:-.05em;
+  color:#fff;text-transform:uppercase;text-shadow:0 8px 28px rgba(0,0,0,.5)}
+.tpl__poster i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.72)}
+.tpl__poster u{text-decoration:none;margin-top:14px;font-size:11.5px;font-weight:600;padding:7px 14px;border-radius:99px;
+  color:#fff;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.28);backdrop-filter:blur(8px);
+  opacity:0;transform:translateY(8px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.tpl:hover .tpl__poster u{opacity:1;transform:none}
+.tpl.live .tpl__poster u{display:none}
+.pv1{background:linear-gradient(145deg,#16255E,#070B14)}
+.pv2{background:linear-gradient(145deg,#0B2233,#04060A)}
+.pv3{background:linear-gradient(145deg,#FFB199,#7C6BFF 55%,#39C6B4)}
+.pv4{background:linear-gradient(145deg,#D7FF3E,#1A1A1A 60%,#0A0A0A)}
+.pv5{background:linear-gradient(145deg,#8B5CF6,#EC4899 50%,#22D3EE)}
+.tpl__frame{position:absolute;inset:0;width:1600px;height:1000px;border:0;transform-origin:0 0;pointer-events:none;
+  opacity:0;transition:opacity .9s ease}
+.tpl.live .tpl__frame{opacity:1}
+.tpl.live .tpl__poster{opacity:0}
+.tpl__badge{position:absolute;top:14px;left:14px;z-index:3;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;padding:6px 11px;border-radius:99px;background:rgba(0,0,0,.55);color:#fff;
+  backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16)}
+.tpl__open{position:absolute;right:14px;bottom:14px;z-index:3;display:inline-flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:99px;font-size:13px;font-weight:600;background:rgba(255,255,255,.94);color:#05070C;
+  transform:translateY(10px);opacity:0;transition:transform .5s var(--ease),opacity .5s var(--ease)}
+.tpl:hover .tpl__open{transform:none;opacity:1}
+
+.tpl__body{padding:26px 26px 28px;flex:1;display:flex;flex-direction:column}
+.tpl__body h2{font-size:1.42rem;font-weight:800;margin-bottom:9px}
+.tpl__body p{color:var(--muted);font-size:.95rem;margin-bottom:20px;flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chips span{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;padding:5px 10px;border-radius:99px;
+  border:1px solid var(--line);color:var(--muted)}
+
+/* note */
+.note{margin-top:62px;border:1px solid var(--line);border-radius:var(--radius);padding:36px;background:var(--bg-soft)}
+.note h3{font-size:1.2rem;font-weight:800;margin-bottom:10px}
+.note p{color:var(--muted);font-size:.95rem;max-width:760px}
+.note ul{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.note li{display:flex;gap:10px;font-size:.9rem;color:var(--ink-soft)}
+.note li svg{flex-shrink:0;margin-top:4px;color:var(--blue-500)}
+
+footer.ft{border-top:1px solid var(--line);padding:36px 0}
+.ft__in{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+
+.rv{opacity:0;transform:translateY(24px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav__in">
+    <a class="nav__logo" href="../index.html"><span class="nav__mark"></span>Post Studio</a>
+    <div class="nav__act">
+      <button class="iconbtn" id="themeToggle" aria-label="Cambiar tema">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+      </button>
+      <a class="btn btn--p" href="../index.html">Ir a la web</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hd">
+  <div class="wrap">
+    <span class="eyebrow rv">Modelos de web · 2026</span>
+    <h1 class="rv">Cinco plantillas. Cero plantillas aburridas.</h1>
+    <p class="rv">Modelos genéricos, no atados a ningún sector: se adaptan a un estudio, una tienda, una clínica o una startup solo cambiando textos y color. Todos con animación real, cero librerías externas y un único archivo HTML.</p>
+    <div class="hd__row rv">
+      <a class="btn btn--p" href="#modelos">Ver los cinco modelos
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn btn--g" href="#detalles">Qué incluye cada uno</a>
+    </div>
+    <div class="hd__facts rv">
+      <div><b>5</b><span>Modelos completos</span></div>
+      <div><b>1</b><span>Archivo por modelo</span></div>
+      <div><b>0</b><span>Dependencias</span></div>
+      <div><b>100 %</b><span>Adaptable a móvil</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="gal" id="modelos">
+  <div class="wrap">
+    <div class="cards">
+
+      <article class="tpl tpl--wide rv" data-src="01-cinema.html">
+        <div class="tpl__view">
+          <div class="tpl__poster pv1"><b>Cinema</b><i>Scroll cinematográfico</i><u>Pasa el cursor para verla en vivo</u></div>
+          <iframe class="tpl__frame" title="Vista previa de Cinema" loading="lazy" tabindex="-1" scrolling="no"></iframe>
+          <span class="tpl__badge">01 · Cinema</span>
+          <a class="tpl__open" href="01-cinema.html" target="_blank" rel="noopener">Abrir modelo
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+        <div class="tpl__body">
+          <h2>Cinema</h2>
+          <p>Secuencia cinematográfica controlada por el scroll: el titular se difumina, una tarjeta sube desde abajo, se abre a pantalla completa y revela el producto. Ideal para lanzamientos y para grabar en vídeo.</p>
+          <div class="chips"><span>Scroll cinematográfico</span><span>Mockup 3D</span><span>Contador animado</span><span>Modo oscuro</span></div>
+        </div>
+      </article>
+
+      <article class="tpl rv" data-src="02-constellation.html">
+        <div class="tpl__view">
+          <div class="tpl__poster pv2"><b>Constellation</b><i>Malla interactiva</i><u>Pasa el cursor para verla en vivo</u></div>
+          <iframe class="tpl__frame" title="Vista previa de Constellation" loading="lazy" tabindex="-1" scrolling="no"></iframe>
+          <span class="tpl__badge">02 · Constellation</span>
+          <a class="tpl__open" href="02-constellation.html" target="_blank" rel="noopener">Abrir modelo
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+        <div class="tpl__body">
+          <h2>Constellation</h2>
+          <p>Una malla interactiva dibujada en canvas con física de resortes: los nodos huyen del cursor y vuelven a su sitio. Estética técnica, precisa y muy reconocible en redes.</p>
+          <div class="chips"><span>Canvas interactivo</span><span>Física real</span><span>Cursor automático</span><span>Modo oscuro</span></div>
+        </div>
+      </article>
+
+      <article class="tpl rv" data-src="03-aurora.html">
+        <div class="tpl__view">
+          <div class="tpl__poster pv3"><b>Aurora</b><i>Luz y editorial</i><u>Pasa el cursor para verla en vivo</u></div>
+          <iframe class="tpl__frame" title="Vista previa de Aurora" loading="lazy" tabindex="-1" scrolling="no"></iframe>
+          <span class="tpl__badge">03 · Aurora</span>
+          <a class="tpl__open" href="03-aurora.html" target="_blank" rel="noopener">Abrir modelo
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+        <div class="tpl__body">
+          <h2>Aurora</h2>
+          <p>Luminosa y editorial. Degradados que respiran, revelado de texto por líneas, botones magnéticos y tarjetas que se apilan al hacer scroll. La opción más cálida de las cinco.</p>
+          <div class="chips"><span>Tema claro</span><span>Cursor propio</span><span>Tarjetas apiladas</span><span>Acordeón</span></div>
+        </div>
+      </article>
+
+      <article class="tpl rv" data-src="04-monolith.html">
+        <div class="tpl__view">
+          <div class="tpl__poster pv4"><b>Monolith</b><i>Tipografía XXL</i><u>Pasa el cursor para verla en vivo</u></div>
+          <iframe class="tpl__frame" title="Vista previa de Monolith" loading="lazy" tabindex="-1" scrolling="no"></iframe>
+          <span class="tpl__badge">04 · Monolith</span>
+          <a class="tpl__open" href="04-monolith.html" target="_blank" rel="noopener">Abrir modelo
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+        <div class="tpl__body">
+          <h2>Monolith</h2>
+          <p>Tipografía gigante, galería que avanza en horizontal mientras bajas y una lista de proyectos con previsualización flotante. Carácter editorial y mucha personalidad.</p>
+          <div class="chips"><span>Scroll horizontal</span><span>Tipografía XXL</span><span>Preview al pasar</span><span>Acento ácido</span></div>
+        </div>
+      </article>
+
+      <article class="tpl rv" data-src="05-prism.html">
+        <div class="tpl__view">
+          <div class="tpl__poster pv5"><b>Prism</b><i>Cristal y 3D</i><u>Pasa el cursor para verla en vivo</u></div>
+          <iframe class="tpl__frame" title="Vista previa de Prism" loading="lazy" tabindex="-1" scrolling="no"></iframe>
+          <span class="tpl__badge">05 · Prism</span>
+          <a class="tpl__open" href="05-prism.html" target="_blank" rel="noopener">Abrir modelo
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+        <div class="tpl__body">
+          <h2>Prism</h2>
+          <p>Cristal, profundidad y color. Un panel 3D que gira con el ratón, foco de luz que sigue al cursor, tarjetas inclinables y tabla de precios con cambio mensual/anual animado.</p>
+          <div class="chips"><span>Glassmorphism</span><span>Paralaje 3D</span><span>Tarjetas tilt</span><span>Precios animados</span></div>
+        </div>
+      </article>
+
+    </div>
+
+    <section class="note rv" id="detalles">
+      <h3>Lo que comparten los cinco</h3>
+      <p>Están pensados como base de trabajo: puedes cambiar el color de marca en una sola línea (las variables CSS están al principio de cada archivo), sustituir los textos y publicar. No hay procesos de compilación ni dependencias que se rompan con el tiempo.</p>
+      <ul>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Un único archivo HTML autónomo por modelo</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Sin GSAP ni frameworks: solo CSS y JavaScript nativo</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Animación desactivada si el sistema lo pide</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Diseño adaptado de 360 px a pantallas panorámicas</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Contenido genérico, listo para cualquier sector</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 12.5L9 17.5L20 6.5"/></svg>Foco visible y estructura semántica</li>
+      </ul>
+    </section>
+  </div>
+</main>
+
+<footer class="ft">
+  <div class="wrap ft__in">
+    <span>© <span id="yr"></span> Post Studio — Modelos de web</span>
+    <a href="../index.html">Volver a postudio.es</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  /* theme, shared with the main site */
+  var root = document.documentElement, toggle = document.getElementById('themeToggle');
+  try { if(localStorage.getItem('postStudioTheme') === 'dark') root.setAttribute('data-theme','dark'); } catch(e){}
+  toggle.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if(dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('postStudioTheme', dark ? 'light' : 'dark'); } catch(e){}
+  });
+
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.14});
+  document.querySelectorAll('.rv').forEach(function(el,i){
+    el.style.transitionDelay = (i%3)*80 + 'ms'; io.observe(el);
+  });
+
+  /* live previews: scale a real 1600×1000 viewport into the card */
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.tpl'));
+  var canLive = window.innerWidth > 760 &&
+                !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function fit(card){
+    var view = card.querySelector('.tpl__view');
+    var frame = card.querySelector('.tpl__frame');
+    var s = view.clientWidth / 1600;
+    frame.style.transform = 'scale(' + s + ')';
+    frame.style.height = (view.clientHeight / s) + 'px';
+  }
+
+  function load(card){
+    if(card.dataset.loaded) return;
+    card.dataset.loaded = '1';
+    var frame = card.querySelector('.tpl__frame');
+    fit(card);
+    var show = function(){ card.classList.add('live'); };
+    frame.addEventListener('load', show);
+    /* a slow font or image should not hold the preview hostage */
+    setTimeout(show, 1800);
+    frame.src = card.dataset.src;
+  }
+
+  if(canLive){
+    /* the first card loads on its own; the rest wait for intent, so the
+       gallery never runs five animated pages at the same time */
+    var first = cards[0];
+    var lio = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ lio.unobserve(e.target); load(e.target); } });
+    }, {rootMargin:'150px 0px'});
+    lio.observe(first);
+
+    cards.forEach(function(c){
+      c.addEventListener('pointerenter', function(){ load(c); });
+      c.addEventListener('focusin', function(){ load(c); });
+    });
+
+    var rt;
+    window.addEventListener('resize', function(){
+      clearTimeout(rt);
+      rt = setTimeout(function(){ cards.forEach(function(c){ if(c.dataset.loaded) fit(c); }); }, 150);
+    });
+  }
+})();
+</script>
+</body>
+</html>
