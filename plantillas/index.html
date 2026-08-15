@@ -45,8 +45,9 @@ h1,h2,h3{font-family:var(--font-display);letter-spacing:-.03em;line-height:1.06}
   border-bottom:1px solid var(--line)}
 .nav__in{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:15px;padding-bottom:15px}
 .nav__logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;letter-spacing:-.04em;font-size:17px}
-.nav__mark{width:24px;height:24px;border-radius:7px;background:linear-gradient(140deg,var(--blue-500),var(--blue-300));
-  box-shadow:0 6px 16px -5px rgba(46,124,246,.8)}
+.nav__mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(140deg,var(--blue-500),var(--blue-300));
+  box-shadow:0 8px 18px -7px rgba(46,124,246,.9);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav__mark svg{width:14px;height:14px}
 .nav__act{display:flex;align-items:center;gap:10px}
 .iconbtn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
   transition:background .3s,transform .4s var(--ease)}
@@ -148,12 +149,16 @@ footer.ft{border-top:1px solid var(--line);padding:36px 0}
 
 <nav class="nav">
   <div class="wrap nav__in">
-    <a class="nav__logo" href="../index.html"><span class="nav__mark"></span>Post Studio</a>
+    <a class="nav__logo" href="../index.html">
+      <span class="nav__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20V4h6.4a4.6 4.6 0 0 1 0 9.2H10.6"/></svg>
+      </span>Post Studio
+    </a>
     <div class="nav__act">
       <button class="iconbtn" id="themeToggle" aria-label="Cambiar tema">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
       </button>
-      <a class="btn btn--p" href="../index.html">Ir a la web</a>
+      <a class="btn btn--p" href="../index.html#modelos">Volver a la web</a>
     </div>
   </div>
 </nav>
@@ -282,7 +287,7 @@ footer.ft{border-top:1px solid var(--line);padding:36px 0}
 <footer class="ft">
   <div class="wrap ft__in">
     <span>© <span id="yr"></span> Post Studio — Modelos de web</span>
-    <a href="../index.html">Volver a poststudio.dev</a>
+    <a href="../index.html#contacto">¿Te gusta uno? Hablemos de tu web →</a>
   </div>
 </footer>
 
